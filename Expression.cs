@@ -8,6 +8,8 @@
         private double result = 0;
         private double tempResult = 0;
         private char lastInputSymbol;
+        private bool lastSymbolIsNumber;
+        private string errorMessage = string.Empty;
 
         public void Add(char symbol, out string message)
         {
@@ -26,6 +28,7 @@
             {
                 if (IsOperator(symbol))
                 {
+                    lastSymbolIsNumber = false;
                     return "Введите число!";
                 }
 
@@ -52,11 +55,19 @@
             text = string.Empty;
         }
 
-        public string GetResult()
+        public string GetResult(out string message)
         {
+            errorMessage = string.Empty;
+            message = string.Empty;
             if (text != string.Empty)
             {
                 Calculate();
+
+                if (errorMessage != string.Empty)
+                {
+                    message = errorMessage;
+                    return errorMessage;
+                }
 
                 operands.Clear();
                 operators.Clear();
@@ -73,14 +84,14 @@
 
             if (text != string.Empty)
             {
-                SeparateOperands();
-                SeparateOperators();
-
-                if (operands.Count < 2)
+                if (!lastSymbolIsNumber)
                 {
+                    errorMessage = "Проверьте выражение!";
                     return;
                 }
 
+                SeparateOperands();
+                SeparateOperators();
                 DoMultiply();
                 DoDivide();
                 DoSumAndSubstract();

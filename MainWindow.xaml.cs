@@ -8,7 +8,8 @@ namespace CalculatorWpfApp
     /// </summary>
     public partial class MainWindow : Window
     {
-    private Expression expression = new Expression();
+        private Expression expression = new Expression();
+        private string message = string.Empty;
 
         public MainWindow()
         {
@@ -42,7 +43,10 @@ namespace CalculatorWpfApp
 
         private void ResultButton_Click(object sender, RoutedEventArgs e)
         {
-            var result = expression.GetResult();
+            UpdateMessage();
+            var result = expression.GetResult(out message);
+
+            ShowMessage();
             displayLabel.Content = result;
         }
 
@@ -51,16 +55,26 @@ namespace CalculatorWpfApp
             var currentButton = sender as Button;
 
             var symbol = Convert.ToChar(currentButton.Content);
-            var message = string.Empty;
+            UpdateMessage();
 
             expression.Add(symbol, out message);
 
-            if (message !=  string.Empty)
+            ShowMessage();
+
+            displayLabel.Content = expression.GetText();
+        }
+
+        private void ShowMessage()
+        {
+            if (message != string.Empty)
             {
                 MessageBox.Show(message);
             }
+        }
 
-            displayLabel.Content = expression.GetText();
+        private void UpdateMessage()
+        {
+            message = string.Empty;
         }
     }
 }
