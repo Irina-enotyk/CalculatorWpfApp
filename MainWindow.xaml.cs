@@ -49,7 +49,7 @@ namespace CalculatorWpfApp
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var currentButton = sender as Button;
-            expression.Add(currentButton.Content.ToString());
+            expression.Add(Convert.ToChar(currentButton.Content));
             displayLabel.Content = expression.GetText();
         }
     }

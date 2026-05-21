@@ -7,9 +7,18 @@
         private List<char> operators = new List<char>();
         private double result = 0;
         private double tempResult = 0;
+        private char lastInputSymbol;
 
-        public void Add(string symbol)
+        public void Add(char symbol)
         {
+            if (lastInputSymbol == '+' || lastInputSymbol == '-' || lastInputSymbol == '*' || lastInputSymbol == '/')
+            {
+                if (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/')
+                {
+                    return;
+                }
+            }
+            lastInputSymbol = symbol;
             text += symbol;
         }
 
