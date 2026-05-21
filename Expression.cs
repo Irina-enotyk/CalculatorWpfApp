@@ -9,17 +9,37 @@
         private double tempResult = 0;
         private char lastInputSymbol;
 
-        public void Add(char symbol)
+        public void Add(char symbol, out string message)
         {
-            if (lastInputSymbol == '+' || lastInputSymbol == '-' || lastInputSymbol == '*' || lastInputSymbol == '/')
+            message = InputValidator(symbol);
+            
+            if( message == string.Empty)
             {
-                if (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/')
+                lastInputSymbol = symbol;
+                text += symbol;
+            }
+        }
+
+        private string InputValidator(char symbol)
+        {
+            if (IsOperator(lastInputSymbol))
+            {
+                if (IsOperator(symbol))
                 {
-                    return;
+                    return "Введите число!";
+                }
+
+                if (symbol == '0')
+                {
+                    return "На ноль делить нельзя!";
                 }
             }
-            lastInputSymbol = symbol;
-            text += symbol;
+            return string.Empty;
+        }
+
+        private bool IsOperator(char symbol)
+        {
+            return (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/');
         }
 
         public string GetText()
@@ -34,12 +54,15 @@
 
         public string GetResult()
         {
-            Calculate();
+            if (text != string.Empty)
+            {
+                Calculate();
 
-            operands.Clear();
-            operators.Clear();
+                operands.Clear();
+                operators.Clear();
 
-            text = result.ToString();
+                text = result.ToString();
+            }
             return text;
         }
 
