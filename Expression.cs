@@ -6,10 +6,16 @@
         private List<double> operands = new List<double>();
         private List<char> operators = new List<char>();
         private double result = 0;
+        private double tempResult = 0;
 
         public void Add(string symbol)
         {
             text += symbol;
+        }
+
+        public string GetText()
+        {
+            return text;
         }
 
         public void Clear()
@@ -17,63 +23,96 @@
             text = string.Empty;
         }
 
-        public double GetResult()
+        public string GetResult()
         {
             Calculate();
-            return result;
+
+            operands.Clear();
+            operators.Clear();
+
+            text = result.ToString();
+            return text;
         }
 
         private void Calculate ()
         {
-            double tempResult = 0;
+            TextValidation();
+            tempResult = 0;
 
             if (text != string.Empty)
             {
                 SeparateOperands();
                 SeparateOperators();
 
-                if( operands.Count < 2 || operators.Count == 0 ) 
+                if (operands.Count < 2)
                 {
                     return;
                 }
 
-                for (int i = 1; i < operands.Count; i++)
-                {
-                    if (operators[i - 1] == '*')
-                    {
-                        tempResult = operands[i - 1] * operands[i];
-                    }
+                DoMultiply();
+                DoDivide();
+                DoSumAndSubstract();
 
-                    if (operators[i - 1] == '/')
-                    {
-                        tempResult = operands[i - 1] / operands[i];
-                    }
-
-                    operands[i - 1] = tempResult;
-                    operands.RemoveAt(i);
-                    operators.RemoveAt(i - 1);
-                    i--;
-                }
-
-                for (int i = 1; i < operands.Count; i++)
-                {
-                    if (operators[i - 1] == '+')
-                    {
-                        tempResult = operands[i - 1] + operands[i];
-                    }
-
-                    if (operators[i - 1] == '-')
-                    {
-                        tempResult = operands[i - 1] - operands[i];
-                    }
-
-                    operands[i - 1] = tempResult;
-                    operands.RemoveAt(i);
-                    operators.RemoveAt(i - 1);
-                    i--;
-                }
                 result = tempResult;
             }
+        }
+
+        private void TextValidation()
+        {
+            if (text[0] == '-')
+            {
+                text = "0" + text;
+            }
+        }
+
+        private void DoSumAndSubstract()
+        {
+            for (int i = 1; i < operands.Count; i++)
+            {
+                if (operators[i - 1] == '+')
+                {
+                    tempResult = operands[i - 1] + operands[i];
+                }
+
+                if (operators[i - 1] == '-')
+                {
+                    tempResult = operands[i - 1] - operands[i];
+                }
+                i = UpdateData(i);
+            }
+        }
+
+        private void DoDivide()
+        {
+            for (int i = 1; i < operands.Count; i++)
+            {
+                if (operators[i - 1] == '/')
+                {
+                    tempResult = operands[i - 1] / operands[i];
+                    i = UpdateData(i);
+                }
+            }
+        }
+
+        private void DoMultiply()
+        {
+            for (int i = 1; i < operands.Count; i++)
+            {
+                if (operators[i - 1] == '*')
+                {
+                    tempResult = operands[i - 1] * operands[i];
+                    i = UpdateData(i);
+                }
+            }
+        }
+
+        private int UpdateData(int i)
+        {
+            operands[i - 1] = tempResult;
+            operands.RemoveAt(i);
+            operators.RemoveAt(i - 1);
+            i--; 
+            return i;
         }
 
         private void SeparateOperands()
