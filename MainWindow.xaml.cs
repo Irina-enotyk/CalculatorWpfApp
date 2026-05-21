@@ -43,10 +43,14 @@ namespace CalculatorWpfApp
 
         private void ResultButton_Click(object sender, RoutedEventArgs e)
         {
-            UpdateMessage();
-            var result = expression.GetResult(out message);
+            var result = expression.GetResult();
 
-            ShowMessage();
+            UpdateMessage();
+            if (message != string.Empty)
+            {
+                ShowMessage();
+                return;
+            }
             displayLabel.Content = result;
         }
 
@@ -55,13 +59,22 @@ namespace CalculatorWpfApp
             var currentButton = sender as Button;
 
             var symbol = Convert.ToChar(currentButton.Content);
+            expression.Add(symbol);
+
             UpdateMessage();
-
-            expression.Add(symbol, out message);
-
-            ShowMessage();
+            if (message != string.Empty)
+            {
+                ShowMessage();
+                return;
+            }
 
             displayLabel.Content = expression.GetText();
+        }
+
+        private void UpdateMessage()
+        {
+            message = string.Empty;
+            message = expression.GetErrorMessage();
         }
 
         private void ShowMessage()
@@ -70,11 +83,6 @@ namespace CalculatorWpfApp
             {
                 MessageBox.Show(message);
             }
-        }
-
-        private void UpdateMessage()
-        {
-            message = string.Empty;
         }
     }
 }

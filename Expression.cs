@@ -11,33 +11,15 @@
         private bool lastSymbolIsNumber;
         private string errorMessage = string.Empty;
 
-        public void Add(char symbol, out string message)
+        public void Add(char symbol)
         {
-            message = InputValidator(symbol);
-            
-            if( message == string.Empty)
+            errorMessage = string.Empty;
+            InputValidator(symbol);
+            if(errorMessage == string.Empty)
             {
                 lastInputSymbol = symbol;
                 text += symbol;
             }
-        }
-
-        private string InputValidator(char symbol)
-        {
-            if (IsOperator(lastInputSymbol))
-            {
-                if (IsOperator(symbol))
-                {
-                    lastSymbolIsNumber = false;
-                    return "Введите число!";
-                }
-
-                if (symbol == '0')
-                {
-                    return "На ноль делить нельзя!";
-                }
-            }
-            return string.Empty;
         }
 
         private bool IsOperator(char symbol)
@@ -55,26 +37,53 @@
             text = string.Empty;
         }
 
-        public string GetResult(out string message)
+        public string GetResult()
         {
             errorMessage = string.Empty;
-            message = string.Empty;
             if (text != string.Empty)
             {
                 Calculate();
 
-                if (errorMessage != string.Empty)
+                if (errorMessage == string.Empty)
                 {
-                    message = errorMessage;
-                    return errorMessage;
+                    operands.Clear();
+                    operators.Clear();
+
+                    text = result.ToString();
                 }
-
-                operands.Clear();
-                operators.Clear();
-
-                text = result.ToString();
             }
             return text;
+        }
+
+        public string GetErrorMessage()
+        {
+            return errorMessage;
+        }
+
+        private void InputValidator(char symbol)
+        {
+            //Какая-то тавтология получается: IsOperator и lastSymbolIsNumber
+
+            if (!IsOperator(symbol))
+            {
+                lastSymbolIsNumber = true;
+
+                errorMessage = string.Empty;
+            }
+
+            if (IsOperator(lastInputSymbol))
+            {
+                if (IsOperator(symbol))
+                {
+                    lastSymbolIsNumber = false;
+                    errorMessage = "Введите число!";
+                }
+
+                if (symbol == '0')
+                {
+                    errorMessage = "На ноль делить нельзя!";
+                }
+            }
         }
 
         private void Calculate ()
@@ -85,6 +94,12 @@
             if (text != string.Empty)
             {
                 if (!lastSymbolIsNumber)
+                {
+                    errorMessage = "Проверьте выражение!";
+                    return;
+                }
+
+                if (text[0] == 0 && lastSymbolIsNumber)
                 {
                     errorMessage = "Проверьте выражение!";
                     return;
@@ -105,6 +120,11 @@
             if (text[0] == '-')
             {
                 text = "0" + text;
+            }
+
+            if (text[0] == 0 && (text[1] < 48 || text[1] > 57))
+            {
+                text = text.Remove(0, 1);
             }
         }
 
