@@ -16,6 +16,7 @@ namespace CalculatorWpfApp
             InitializeComponent();
 
             //Не знаю, так нормально? Наверное, можно проще как-то.
+            //Может, как-то пройтись циклом по всем кнопкам формы и для каждой создать подписку?
             zeroButton.Click += Button_Click;
             oneButton.Click += Button_Click;
             twoButton.Click += Button_Click;
