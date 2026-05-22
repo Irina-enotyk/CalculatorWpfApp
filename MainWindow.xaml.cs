@@ -14,10 +14,10 @@ namespace CalculatorWpfApp
         public MainWindow()
         {
             InitializeComponent();
-            ButtonsSubsctibtion();
+            CreateButtonsSubsctibtion();
         }
 
-        private void ButtonsSubsctibtion()
+        private void CreateButtonsSubsctibtion()
         {
             Button[] buttons =
                 [
@@ -43,11 +43,6 @@ namespace CalculatorWpfApp
             {
                 button.Click += Button_Click;
             }
-        }
-
-        private void Button_Click1(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
