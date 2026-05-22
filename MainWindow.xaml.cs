@@ -14,25 +14,40 @@ namespace CalculatorWpfApp
         public MainWindow()
         {
             InitializeComponent();
+            ButtonsSubsctibtion();
+        }
 
-            //Не знаю, так нормально? Наверное, можно проще как-то.
-            //Может, как-то пройтись циклом по всем кнопкам формы и для каждой создать подписку?
-            zeroButton.Click += Button_Click;
-            oneButton.Click += Button_Click;
-            twoButton.Click += Button_Click;
-            threeButton.Click += Button_Click;
-            fourButton.Click += Button_Click;
-            fiveButton.Click += Button_Click;
-            sixButton.Click += Button_Click;
-            sevenButton.Click += Button_Click;
-            eightButton.Click += Button_Click;
-            nineButton.Click += Button_Click;
-            plusButton.Click += Button_Click;
-            minusButton.Click += Button_Click;
-            multiplyButton.Click += Button_Click;
-            devideButton.Click += Button_Click;
-            resultButton.Click += ResultButton_Click;
-            clearButton.Click += ClearButton_Click;
+        private void ButtonsSubsctibtion()
+        {
+            Button[] buttons =
+                [
+                zeroButton,
+                oneButton,
+                twoButton,
+                threeButton,
+                fourButton,
+                fiveButton,
+                sixButton,
+                sevenButton,
+                eightButton,
+                nineButton,
+                plusButton,
+                minusButton,
+                multiplyButton,
+                devideButton,
+                resultButton,
+                clearButton
+                ];
+
+            foreach (var button in buttons)
+            {
+                button.Click += Button_Click;
+            }
+        }
+
+        private void Button_Click1(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)

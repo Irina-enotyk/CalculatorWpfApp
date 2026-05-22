@@ -79,7 +79,7 @@
                     errorMessage = "Введите число!";
                 }
 
-                if (symbol == '0')
+                if (lastInputSymbol == '/' && symbol == '0')
                 {
                     errorMessage = "На ноль делить нельзя!";
                 }
@@ -99,7 +99,7 @@
                     return;
                 }
 
-                if (text[0] == 0 && lastSymbolIsNumber)
+                if (text[0] == '0' && lastSymbolIsNumber)
                 {
                     errorMessage = "Проверьте выражение!";
                     return;
@@ -122,7 +122,7 @@
                 text = "0" + text;
             }
 
-            if (text[0] == 0 && (text[1] < 48 || text[1] > 57))
+            if (text[0] == '0' && lastSymbolIsNumber)
             {
                 text = text.Remove(0, 1);
             }
@@ -192,7 +192,7 @@
         {
             foreach (var element in text)
             {
-                if (element == '+' || element == '-' || element == '*' || element == '/')
+                if (IsOperator(element))
                 {
                     operators.Add(element);
                 }
