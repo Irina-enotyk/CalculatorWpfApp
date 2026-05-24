@@ -2,28 +2,17 @@
 {
     public class Expression
     {
-        private string text = string.Empty;
-
-        private List<double> numbers = new List<double>();
-        private List<char> operators = new List<char>();
+        public string text = string.Empty;
 
         private double result = 0;
-        private double tempResult = 0;
 
-        private char lastInputSymbol;
-        private bool lastSymbolIsNumber;
-
-        private string errorMessage = string.Empty;
+        private char lastSymbol;
 
         public void Add(char symbol)
         {
-            errorMessage = string.Empty;
-            InputValidator(symbol);
-            if(errorMessage == string.Empty)
-            {
-                lastInputSymbol = symbol;
-                text += symbol;
-            }
+            Validate(symbol);
+            lastSymbol = symbol;
+            text += symbol;
         }
 
         public string GetText()
@@ -38,25 +27,12 @@
 
         public string GetResult()
         {
-            errorMessage = string.Empty;
             if (text != string.Empty)
             {
-                Calculate();
-
-                if (errorMessage == string.Empty)
-                {
-                    numbers.Clear();
-                    operators.Clear();
-
-                    text = result.ToString();
-                }
+                result = Calculate();
+                text = result.ToString();
             }
             return text;
-        }
-
-        public string GetErrorMessage()
-        {
-            return errorMessage;
         }
 
         private bool IsOperator(char symbol)
@@ -64,56 +40,55 @@
             return (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/');
         }
 
-        private void InputValidator(char symbol)
+        private void Validate(char symbol)
         {
-            if (!IsOperator(symbol))
+            if( text == string.Empty)
             {
-                lastSymbolIsNumber = true;
-                errorMessage = string.Empty;
+                if (IsOperator(symbol) && symbol != '-')
+                {
+                    throw new Exception("Выражение не может начинаться c \n + * /");
+                }
             }
 
-            if (IsOperator(lastInputSymbol))
+            if(text.Length == 1 && text.Last() == '0')
+            {
+                if (!IsOperator(symbol))
+                {
+                    throw new Exception("Некорректный ввод!");
+                }
+            }
+
+            if (IsOperator(lastSymbol))
             {
                 if (IsOperator(symbol))
                 {
-                    lastSymbolIsNumber = false;
-                    errorMessage = "Введите число!";
+                    throw new Exception("Введите число!");
                 }
 
-                if (lastInputSymbol == '/' && symbol == '0')
+                if (lastSymbol == '/' && symbol == '0')
                 {
-                    errorMessage = "На ноль делить нельзя!";
+                    throw new Exception("На ноль делить нельзя!");
                 }
             }
         }
 
-        private void Calculate ()
+        private double Calculate()
         {
             TextValidation();
-            tempResult = 0;
+            double tempResult = 0;
 
             if (text != string.Empty)
             {
-                if (!lastSymbolIsNumber)
-                {
-                    errorMessage = "Проверьте выражение!";
-                    return;
-                }
+                var numbers = SeparateDoubles();
+                var operators = SeparateOperators();
 
-                if (text[0] == '0' && lastSymbolIsNumber)
-                {
-                    errorMessage = "Проверьте выражение!";
-                    return;
-                }
-
-                SeparateOperands();
-                SeparateOperators();
-                DoMultiply();
-                DoDivide();
-                DoSumAndSubstract();
+                tempResult = Multiply(numbers, operators, tempResult);
+                tempResult = Divide(numbers, operators, tempResult);
+                tempResult = SumAndSubstract(numbers, operators, tempResult);
 
                 result = tempResult;
             }
+            return result;
         }
 
         private void TextValidation()
@@ -123,13 +98,13 @@
                 text = "0" + text;
             }
 
-            if (text[0] == '0' && lastSymbolIsNumber)
+            if (IsOperator(lastSymbol))
             {
-                text = text.Remove(0, 1);
+                throw new Exception("Допишите выражение!");
             }
         }
 
-        private void DoSumAndSubstract()
+        private double SumAndSubstract(List<double> numbers, List<char> operators, double tempResult)
         {
             for (int i = 1; i < numbers.Count; i++)
             {
@@ -142,55 +117,62 @@
                 {
                     tempResult = numbers[i - 1] - numbers[i];
                 }
-                i = UpdateData(i);
+
+                i = UpdateData(i, numbers, operators, tempResult);
             }
+            return tempResult;
         }
 
-        private void DoDivide()
+        private double Divide(List<double> numbers, List<char> operators, double tempResult)
         {
             for (int i = 1; i < numbers.Count; i++)
             {
                 if (operators[i - 1] == '/')
                 {
                     tempResult = numbers[i - 1] / numbers[i];
-                    i = UpdateData(i);
+                    i = UpdateData(i, numbers, operators, tempResult);
                 }
             }
+            return tempResult;
         }
 
-        private void DoMultiply()
+        private double Multiply(List<double> numbers, List<char> operators, double tempResult)
         {
             for (int i = 1; i < numbers.Count; i++)
             {
                 if (operators[i - 1] == '*')
                 {
                     tempResult = numbers[i - 1] * numbers[i];
-                    i = UpdateData(i);
+                    i = UpdateData(i, numbers, operators, tempResult);
                 }
             }
+            return tempResult;
         }
 
-        private int UpdateData(int i)
+        private int UpdateData(int i, List<double> numbers, List<char> operators, double tempResult)
         {
             numbers[i - 1] = tempResult;
             numbers.RemoveAt(i);
             operators.RemoveAt(i - 1);
-            i--; 
+            i--;
             return i;
         }
 
-        private void SeparateOperands()
+        private List<double> SeparateDoubles()
         {
-            var numbers = text.Split('+', '-', '*', '/');
-            for (int i = 0; i < numbers.Length; i++)
+            var numbers = new List<double>();
+            var parts = text.Split('+', '-', '*', '/');
+            for (int i = 0; i < parts.Length; i++)
             {
-                var operand = Convert.ToDouble(numbers[i]);
-                this.numbers.Add(operand);
+                var number = Convert.ToDouble(parts[i]);
+                numbers.Add(number);
             }
+            return numbers;
         }
 
-        private void SeparateOperators()
+        private List<char> SeparateOperators()
         {
+            var operators = new List<char>();
             foreach (var element in text)
             {
                 if (IsOperator(element))
@@ -198,6 +180,7 @@
                     operators.Add(element);
                 }
             }
+            return operators;
         }
     }
 }
