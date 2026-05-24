@@ -3,12 +3,16 @@
     public class Expression
     {
         private string text = string.Empty;
-        private List<double> operands = new List<double>();
+
+        private List<double> numbers = new List<double>();
         private List<char> operators = new List<char>();
+
         private double result = 0;
         private double tempResult = 0;
+
         private char lastInputSymbol;
         private bool lastSymbolIsNumber;
+
         private string errorMessage = string.Empty;
 
         public void Add(char symbol)
@@ -20,11 +24,6 @@
                 lastInputSymbol = symbol;
                 text += symbol;
             }
-        }
-
-        private bool IsOperator(char symbol)
-        {
-            return (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/');
         }
 
         public string GetText()
@@ -46,7 +45,7 @@
 
                 if (errorMessage == string.Empty)
                 {
-                    operands.Clear();
+                    numbers.Clear();
                     operators.Clear();
 
                     text = result.ToString();
@@ -60,14 +59,16 @@
             return errorMessage;
         }
 
+        private bool IsOperator(char symbol)
+        {
+            return (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/');
+        }
+
         private void InputValidator(char symbol)
         {
-            //Какая-то тавтология получается: IsOperator и lastSymbolIsNumber
-
             if (!IsOperator(symbol))
             {
                 lastSymbolIsNumber = true;
-
                 errorMessage = string.Empty;
             }
 
@@ -130,16 +131,16 @@
 
         private void DoSumAndSubstract()
         {
-            for (int i = 1; i < operands.Count; i++)
+            for (int i = 1; i < numbers.Count; i++)
             {
                 if (operators[i - 1] == '+')
                 {
-                    tempResult = operands[i - 1] + operands[i];
+                    tempResult = numbers[i - 1] + numbers[i];
                 }
 
                 if (operators[i - 1] == '-')
                 {
-                    tempResult = operands[i - 1] - operands[i];
+                    tempResult = numbers[i - 1] - numbers[i];
                 }
                 i = UpdateData(i);
             }
@@ -147,11 +148,11 @@
 
         private void DoDivide()
         {
-            for (int i = 1; i < operands.Count; i++)
+            for (int i = 1; i < numbers.Count; i++)
             {
                 if (operators[i - 1] == '/')
                 {
-                    tempResult = operands[i - 1] / operands[i];
+                    tempResult = numbers[i - 1] / numbers[i];
                     i = UpdateData(i);
                 }
             }
@@ -159,11 +160,11 @@
 
         private void DoMultiply()
         {
-            for (int i = 1; i < operands.Count; i++)
+            for (int i = 1; i < numbers.Count; i++)
             {
                 if (operators[i - 1] == '*')
                 {
-                    tempResult = operands[i - 1] * operands[i];
+                    tempResult = numbers[i - 1] * numbers[i];
                     i = UpdateData(i);
                 }
             }
@@ -171,8 +172,8 @@
 
         private int UpdateData(int i)
         {
-            operands[i - 1] = tempResult;
-            operands.RemoveAt(i);
+            numbers[i - 1] = tempResult;
+            numbers.RemoveAt(i);
             operators.RemoveAt(i - 1);
             i--; 
             return i;
@@ -184,7 +185,7 @@
             for (int i = 0; i < numbers.Length; i++)
             {
                 var operand = Convert.ToDouble(numbers[i]);
-                operands.Add(operand);
+                this.numbers.Add(operand);
             }
         }
 

@@ -20,8 +20,7 @@ namespace CalculatorWpfApp
         private void CreateButtonsSubsctibtion()
         {
             Button[] buttons =
-                [
-                zeroButton,
+                [zeroButton,
                 oneButton,
                 twoButton,
                 threeButton,
@@ -34,15 +33,15 @@ namespace CalculatorWpfApp
                 plusButton,
                 minusButton,
                 multiplyButton,
-                devideButton,
-                resultButton,
-                clearButton
-                ];
+                devideButton];
 
             foreach (var button in buttons)
             {
                 button.Click += Button_Click;
             }
+
+            resultButton.Click += ResultButton_Click;
+            clearButton.Click += ClearButton_Click;
         }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
@@ -83,16 +82,12 @@ namespace CalculatorWpfApp
 
         private void UpdateMessage()
         {
-            message = string.Empty;
             message = expression.GetErrorMessage();
         }
 
         private void ShowMessage()
         {
-            if (message != string.Empty)
-            {
-                MessageBox.Show(message);
-            }
+            MessageBox.Show(message);
         }
     }
 }
