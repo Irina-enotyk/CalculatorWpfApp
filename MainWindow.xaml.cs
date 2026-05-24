@@ -8,28 +8,37 @@ namespace CalculatorWpfApp
     /// </summary>
     public partial class MainWindow : Window
     {
-    private Expression expression = new Expression();
+        private Expression expression = new Expression();
 
         public MainWindow()
         {
             InitializeComponent();
+            CreateButtonsSubsctibtion();
+        }
 
-            //Не знаю, так нормально? Наверное, можно проще как-то.
-            //Может, как-то пройтись циклом по всем кнопкам формы и для каждой создать подписку?
-            zeroButton.Click += Button_Click;
-            oneButton.Click += Button_Click;
-            twoButton.Click += Button_Click;
-            threeButton.Click += Button_Click;
-            fourButton.Click += Button_Click;
-            fiveButton.Click += Button_Click;
-            sixButton.Click += Button_Click;
-            sevenButton.Click += Button_Click;
-            eightButton.Click += Button_Click;
-            nineButton.Click += Button_Click;
-            plusButton.Click += Button_Click;
-            minusButton.Click += Button_Click;
-            multiplyButton.Click += Button_Click;
-            devideButton.Click += Button_Click;
+        private void CreateButtonsSubsctibtion()
+        {
+            Button[] buttons =
+                [zeroButton,
+                oneButton,
+                twoButton,
+                threeButton,
+                fourButton,
+                fiveButton,
+                sixButton,
+                sevenButton,
+                eightButton,
+                nineButton,
+                plusButton,
+                minusButton,
+                multiplyButton,
+                devideButton];
+
+            foreach (var button in buttons)
+            {
+                button.Click += Button_Click;
+            }
+
             resultButton.Click += ResultButton_Click;
             clearButton.Click += ClearButton_Click;
         }
@@ -42,14 +51,31 @@ namespace CalculatorWpfApp
 
         private void ResultButton_Click(object sender, RoutedEventArgs e)
         {
-            var result = expression.GetResult();
-            displayLabel.Content = result;
+            try
+            {
+                var result = expression.GetResult();
+                displayLabel.Content = result;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var currentButton = sender as Button;
-            expression.Add(currentButton.Content.ToString());
+            var symbol = Convert.ToChar(currentButton.Content);
+
+            try
+            {
+                expression.Add(symbol);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             displayLabel.Content = expression.GetText();
         }
     }

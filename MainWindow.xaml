@@ -5,7 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CalculatorWpfApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="225" Width="300">
+        Title="Калькулятор"
+        Height="225"
+        Width="300"
+        Background="Gray">
+    <Window.Resources>
+
+        <Style x:Key="BaseButton" TargetType="Button">
+            <Setter Property = "Background" Value = "White"/>
+            <Setter Property = "Margin" Value = "5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5" Background = "LightGray" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="OperatorButton" BasedOn="{StaticResource BaseButton}" TargetType="Button">
+            <Setter Property = "Background" Value = "DimGray"/>
+        </Style>
+        
+    </Window.Resources>
     <Grid x:Name="grid">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -21,110 +45,127 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-
+        
         <Label 
             x:Name="displayLabel" 
+            Background="White"
+            Margin="5"
             Content="" 
             Grid.Row="0"
             Grid.ColumnSpan="4"
         />
         <Button 
             x:Name="sevenButton"
+            Style="{StaticResource BaseButton}"
             Content="7" 
             Grid.Row="1" 
             Grid.Column="0"
         />
         <Button 
             x:Name="eightButton"
+            Style="{StaticResource BaseButton}"
             Content="8" 
             Grid.Row="1" 
             Grid.Column="1"
         />
         <Button 
             x:Name="nineButton"
+            Style="{StaticResource BaseButton}"
             Content="9" 
             Grid.Row="1" 
             Grid.Column="2"
         />
         <Button 
             x:Name="plusButton"
+            Style="{StaticResource OperatorButton}"
             Content="+" 
             Grid.Row="1" 
             Grid.Column="3"
         />
         <Button 
             x:Name="sixButton"
+            Style="{StaticResource BaseButton}"
             Content="6" 
             Grid.Row="2" 
             Grid.Column="0"
         />
         <Button 
             x:Name="fiveButton"
+            Style="{StaticResource BaseButton}"
             Content="5" 
             Grid.Row="2" 
             Grid.Column="1"
         />
         <Button 
             x:Name="fourButton"
+            Style="{StaticResource BaseButton}"
             Content="4" 
             Grid.Row="2" 
             Grid.Column="2"
         />
         <Button 
             x:Name="minusButton"
+            Style="{StaticResource OperatorButton}"
             Content="-" 
             Grid.Row="2" 
             Grid.Column="3"
         />
         <Button 
             x:Name="threeButton"
+            Style="{StaticResource BaseButton}"
             Content="3" 
             Grid.Row="3" 
             Grid.Column="0"
         />
         <Button 
             x:Name="twoButton"
+            Style="{StaticResource BaseButton}"
             Content="2" 
             Grid.Row="3" 
             Grid.Column="1"
         />
         <Button 
             x:Name="oneButton"
+            Style="{StaticResource BaseButton}"
             Content="1" 
             Grid.Row="3" 
             Grid.Column="2"
         />
         <Button 
             x:Name="multiplyButton"
+            Style="{StaticResource OperatorButton}"
             Content="*" 
             Grid.Row="3" 
             Grid.Column="3"
         />
         <Button 
             x:Name="clearButton"
+            Style="{StaticResource BaseButton}"
+            Background="Tomato"
             Content="C" 
             Grid.Row="4" 
             Grid.Column="0"
         />
         <Button 
             x:Name="zeroButton"
+            Style="{StaticResource BaseButton}"
             Content="0" 
             Grid.Row="4" 
             Grid.Column="1"
         />
         <Button 
             x:Name="resultButton"
+            Style="{StaticResource OperatorButton}"
             Content="=" 
             Grid.Row="4" 
             Grid.Column="2"
         />
         <Button 
             x:Name="devideButton"
+            Style="{StaticResource OperatorButton}"
             Content="/" 
             Grid.Row="4" 
             Grid.Column="3"
         />
-        
-
     </Grid>
 </Window>
