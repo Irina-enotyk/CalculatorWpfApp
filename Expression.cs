@@ -4,7 +4,7 @@
     {
         public string text = string.Empty;
 
-        private double result = 0;
+        private double tempResult = 0;
 
         private char lastSymbol;
 
@@ -29,7 +29,7 @@
         {
             if (text != string.Empty)
             {
-                result = Calculate();
+                var result = Calculate();
                 text = result.ToString();
             }
             return text;
@@ -54,6 +54,7 @@
             {
                 if (!IsOperator(symbol))
                 {
+                    text = string.Empty;
                     throw new Exception("Некорректный ввод!");
                 }
             }
@@ -75,20 +76,16 @@
         private double Calculate()
         {
             TextValidation();
-            double tempResult = 0;
-
             if (text != string.Empty)
             {
                 var numbers = SeparateDoubles();
                 var operators = SeparateOperators();
 
-                tempResult = Multiply(numbers, operators, tempResult);
-                tempResult = Divide(numbers, operators, tempResult);
-                tempResult = SumAndSubstract(numbers, operators, tempResult);
-
-                result = tempResult;
+                Multiply(numbers, operators);
+                Divide(numbers, operators);
+                SumAndSubstract(numbers, operators);
             }
-            return result;
+            return tempResult;
         }
 
         private void TextValidation()
@@ -104,7 +101,7 @@
             }
         }
 
-        private double SumAndSubstract(List<double> numbers, List<char> operators, double tempResult)
+        private void SumAndSubstract(List<double> numbers, List<char> operators)
         {
             for (int i = 1; i < numbers.Count; i++)
             {
@@ -118,38 +115,35 @@
                     tempResult = numbers[i - 1] - numbers[i];
                 }
 
-                i = UpdateData(i, numbers, operators, tempResult);
+                i = UpdateData(i, numbers, operators);
             }
-            return tempResult;
         }
 
-        private double Divide(List<double> numbers, List<char> operators, double tempResult)
+        private void Divide(List<double> numbers, List<char> operators)
         {
             for (int i = 1; i < numbers.Count; i++)
             {
                 if (operators[i - 1] == '/')
                 {
                     tempResult = numbers[i - 1] / numbers[i];
-                    i = UpdateData(i, numbers, operators, tempResult);
+                    i = UpdateData(i, numbers, operators);
                 }
             }
-            return tempResult;
         }
 
-        private double Multiply(List<double> numbers, List<char> operators, double tempResult)
+        private void Multiply(List<double> numbers, List<char> operators)
         {
             for (int i = 1; i < numbers.Count; i++)
             {
                 if (operators[i - 1] == '*')
                 {
                     tempResult = numbers[i - 1] * numbers[i];
-                    i = UpdateData(i, numbers, operators, tempResult);
+                    i = UpdateData(i, numbers, operators);
                 }
             }
-            return tempResult;
         }
 
-        private int UpdateData(int i, List<double> numbers, List<char> operators, double tempResult)
+        private int UpdateData(int i, List<double> numbers, List<char> operators)
         {
             numbers[i - 1] = tempResult;
             numbers.RemoveAt(i);
